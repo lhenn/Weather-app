@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Laura's Weather App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div id="app">
+
+    <div id="header-container">
+      <button id="header" v-bind:class="{landing : activePage=='landing-page'}" @click="activePage='landing-page'; error=false;"><img src="header.png" alt=""></button>
+      <div id="searchbar" v-if="activePage=='result-page'">
+          <input id="city-input" type="text" placeholder="Find another city..." v-model="cityName"></input>
+          <input id="country-input" type="text" placeholder="Country" v-model="countryName"></input>
+          <button id="searchbutton" @click="getData()">Search</button>
+      </div>
+    </div>
+
+    <div id="body-container">
+
+      <div id="landing-page" v-if="activePage=='landing-page'">
+        <div id="searchbar-landing">
+          <div id="searchfields-container">
+            <input id="city-input" type="text" placeholder="Find your city..." v-model="cityName"></input>
+            <input id="country-input" type="text" placeholder="Country" v-model="countryName"></input>
+          </div>
+          <div id="searchbutton-container">
+            <button id="searchbutton" @click="getData()">Search</button>
+          </div>
+        </div>
+        <div id="error-container">
+          <span v-if="error=='error'">Sorry, no cities matched your search.</span>
+          <span v-if="error=='no-entry'">Please enter a city name above.</span>
+        </div>
+      </div>
+      <div id="result-page"v-if="activePage=='result-page'">
+
+      <div id="error container" v-if="error!='none'">
+        <span v-if="error=='error'">Sorry, no cities matched your search.</span>
+        <span v-if="error=='no-entry'">Please enter a city name above.</span>
+      </div>
+
+      <div id="results" v-if="error=='none'">
+
+        <h1 id="location">{{ weatherData.city.name }},&nbsp;{{ getCountryName(weatherData.city.country)}}  </h1>
+
+        <div id="daily-overview">
+          <div id="daily-overview-header">
+            <h2>Currently in <span>{{ weatherData.city.name }}</span>: </h2>
+          </div>
+          <div id="daily-overview-content">
+          <div id="daily-icon"><img v-bind:src="weatherData.list[0].icon"></div>
+          <div id="daily-overview-temp">{{ convertToCelsius(weatherData.list[0].main.temp)}}&#176;C </div>
+          </div>
+        </div>
+
+        <div id="daily-details">
+          <div id="daily-details-header">
+            <h2>Later Today:</h2>
+          </div>
+          <div id="daily-details-content">
+            <div class="daily-detail" v-for="time in dailyDetails">
+              <div class="daily-detail-time">{{ time.normTime }}</div>
+              <div class="daily-detail-icon"><img v-bind:src="time.icon"></div>
+              <div class="daily-detail-temp">{{ convertToCelsius(time.main.temp)}}&#176; C </div>
+            </div>
+            <!-- <table id="daily-table">
+              <tr class="daily-tr" v-for="time in dailyDetails">
+                <td class="daily-td">{{ time.normTime }}</td>
+                <td>{{ convertToCelsius(time.main.temp)}}&#176; C </td>
+                <td>{{ time.weather[0].description }}</td>
+              </tr>
+            </table> -->
+          </div>
+        </div>
+
+        <div id="forecast">
+          <div id="forecast-header">
+            <h2>Later this week: </h2>
+          </div>
+          <div class="chart-container">
+            <canvas ref="myChart"> </canvas>
+          </div>
+        </div>
+
+      </div>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="country_json.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="main.js"></script>
+
+</body>
+
+</html>
